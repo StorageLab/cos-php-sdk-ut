@@ -9,6 +9,7 @@ use Guzzle\Http\EntityBody;
 use Guzzle\Http\Message\RequestInterface;
 use Qcloud\Cos\Signature;
 use Qcloud\Cos\TokenListener;
+use Qcloud\Cos\GetServiceListener;
 
 class Client extends GSClient {
     const VERSION = '1.0.1';
