@@ -3,8 +3,7 @@
 namespace Qcloud\Cos\Tests;
 
 use Qcloud\Cos\Client;
-use Qcloud\Cos\Exception\CosException;
-
+use Qcloud\Cos\Exception\ServiceResponseException;
 class BucketTest extends \PHPUnit_Framework_TestCase
 {
     private $cosClient;
@@ -40,7 +39,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
         try {
             $this->cosClient->createBucket(array('Bucket' => $this->bucket));
             $this->cosClient->createBucket(array('Bucket' => $this->bucket));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertTrue($e->getExceptionCode() === 'BucketAlreadyOwnedByYou' && $e->getStatusCode() === 409);
         }
     }
@@ -54,7 +53,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
     {
         try {
             $this->cosClient->createBucket(array('Bucket' => 'qwe_213'));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertTrue($e->getExceptionCode() === 'InvalidBucketName' && $e->getStatusCode() === 400);
         }
     }
@@ -71,7 +70,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                     'Bucket' => $this->bucket,
                     'ACL'=>'private'
                 ));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -88,7 +87,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                     'Bucket' => $this->bucket,
                     'ACL'=>'public-read'
                 ));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -106,7 +105,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                     'Bucket' => $this->bucket,
                     'ACL'=>'public'
                 ));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertTrue($e->getExceptionCode() === 'InvalidArgument' && $e->getStatusCode() === 400);
         }
     }
@@ -125,7 +124,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                     'Bucket' => $this->bucket,
                     'ACL'=>'private'
                 ));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -144,7 +143,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                     'Bucket' => $this->bucket,
                     'ACL'=>'public-read'
                 ));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -157,12 +156,13 @@ class BucketTest extends \PHPUnit_Framework_TestCase
     public function testPutBucketAclInvalid()
     {
         try {
-            $this->cosClient->createBucket(
+            $this->cosClient->createBucket(array('Bucket' => $this->bucket));
+            $this->cosClient->PutBucketAcl(
                 array(
                     'Bucket' => $this->bucket,
                     'ACL'=>'public'
                 ));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertTrue($e->getExceptionCode() === 'InvalidArgument' && $e->getStatusCode() === 400);
         }
     }
@@ -178,7 +178,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
             $this->cosClient->PutBucketAcl(array(
                 'Bucket' =>  $this->bucket,
                 'GrantRead' => 'id="qcs::cam::uin/327874225:uin/327874225"'));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -194,7 +194,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
             $this->cosClient->PutBucketAcl(array(
                 'Bucket' =>  $this->bucket,
                 'GrantWrite' => 'id="qcs::cam::uin/327874225:uin/327874225"'));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -210,7 +210,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
             $this->cosClient->PutBucketAcl(array(
                 'Bucket' =>  $this->bucket,
                 'GrantFullControl' => 'id="qcs::cam::uin/327874225:uin/327874225"'));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -226,7 +226,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
             $this->cosClient->PutBucketAcl(array(
                 'Bucket' =>  $this->bucket,
                 'GrantFullControl' => 'id="qcs::cam::uin/2779643970:uin/327874225",id="qcs::cam::uin/327874225:uin/327874225",id="qcs::cam::uin/327874225:uin/327874225"'));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -242,7 +242,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
             $this->cosClient->PutBucketAcl(array(
                 'Bucket' =>  $this->bucket,
                 'GrantFullControl' => 'id="qcs::cam::uin/2779643970:uin/327874225"'));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -260,7 +260,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                 'GrantRead' => 'id="qcs::cam::uin/123:uin/123"',
                 'GrantWrite' => 'id="qcs::cam::uin/2779643970:uin/327874225"',
                 'GrantFullControl' => 'id="qcs::cam::uin/2779643970:uin/327874225"',));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -277,7 +277,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
             $this->cosClient->PutBucketAcl(array(
                 'Bucket' =>  $this->bucket,
                 'GrantFullControl' => 'id="qcs::camuin/321023:uin/327874225"',));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertTrue($e->getExceptionCode() === 'InvalidArgument' && $e->getStatusCode() === 400);
         }
     }
@@ -307,7 +307,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                     'DisplayName' => 'qcs::cam::uin/2779643970:uin/2779643970',
                     'ID' => 'qcs::cam::uin/2779643970:uin/2779643970',
                 )));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -337,7 +337,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                     'DisplayName' => 'qcs::cam::uin/2779643970:uin/2779643970',
                     'ID' => 'qcs::cam::uin/2779643970:uin/2779643970',
                 )));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -353,7 +353,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
             $this->cosClient->PutBucketAcl(array(
                 'Bucket' =>  $this->bucket,
                 'GrantFullControl' => 'id="qcs::cam::uin/321023:uin/327874225"',));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
 //            echo($e->getExceptionCode());
 //            echo($e->getStatusCode());
             $this->assertTrue($e->getExceptionCode() === 'NoSuchBucket' && $e->getStatusCode() === 404);
@@ -376,7 +376,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
             $this->cosClient->PutBucketAcl(array(
                 'Bucket' =>  $this->bucket,
                 'GrantWrite' => 'id="qcs::cam::uin/2779643970:uin/327874225"'));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -391,7 +391,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
             $this->cosClient->createBucket(array('Bucket' => $this->bucket));
             $this->cosClient->ListObjects(array(
                 'Bucket' =>  $this->bucket));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -406,7 +406,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
         try {
             $this->cosClient->ListObjects(array(
                 'Bucket' =>  $this->bucket,));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertTrue($e->getExceptionCode() === 'NoSuchBucket' && $e->getStatusCode() === 404);
         }
     }
@@ -425,7 +425,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
             }
             $this->cosClient->createBucket(array('Bucket' => '12345-'.$this->bucket));
             $this->cosClient->deleteBucket(array('Bucket' => '12345-'.$this->bucket));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -439,26 +439,10 @@ class BucketTest extends \PHPUnit_Framework_TestCase
         try {
             $this->cosClient->createBucket(array('Bucket' => $this->bucket.'-12333-4445'));
             $this->cosClient->deleteBucket(array('Bucket' => $this->bucket.'-12333-4445'));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
-
-    /*
-     * put bucket，bucket名称以-开头
-     * InvalidBucketName
-     * 400
-     */
-    public function testPutBucket4()
-    {
-        try {
-            $this->cosClient->createBucket(array('Bucket' => '-12333-4445'.$this->bucket));
-            $this->cosClient->deleteBucket(array('Bucket' => '-12333-4445'.$this->bucket));
-        } catch (\Exception $e) {
-            $this->assertFalse(false, $e);
-        }
-    }
-
 
     /**********************************
      * TestObject
@@ -473,7 +457,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
         try {
             $this->cosClient->putObject(array(
                 'Bucket' => $this->bucket, 'Key' => 'hello.txt', 'Body' => 'Hello World'));
-        } catch (CosException $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertTrue($e->getExceptionCode() === 'NoSuchBucket');
             $this->assertTrue($e->getStatusCode() === 404);
         }
@@ -488,7 +472,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
         try {
             $this->cosClient->createBucket(array('Bucket' => $this->bucket));
             $this->cosClient->upload($this->bucket, '你好.txt', 'Hello World');
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -501,7 +485,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
         try {
             $this->cosClient->createBucket(array('Bucket' => $this->bucket));
             $this->cosClient->upload($this->bucket, '你好.txt', '123');
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -515,7 +499,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
             $this->cosClient->createBucket(array('Bucket' => $this->bucket));
             $this->cosClient->upload($this->bucket, '你好.txt', '1234124');
             $this->cosClient->upload($this->bucket, '你好.txt', '请二位qwe');
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -534,7 +518,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                 'Metadata' => array(
                      'lew' => str_repeat('a', 1 * 1024),
             )));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -554,7 +538,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                 'Metadata' => array(
                     'lew' => str_repeat('a', 3 * 1024),
                 )));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
 //            echo($e->getExceptionCode());
 //            echo($e->getStatusCode());
             $this->assertTrue($e->getExceptionCode() === 'KeyTooLong' && $e->getStatusCode() === 400);
@@ -569,7 +553,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
         try {
             $result = $this->cosClient->createBucket(array('Bucket' => $this->bucket));
             $this->cosClient->upload($this->bucket, '→↓←→↖↗↙↘! \"#$%&\'()*+,-./0123456789:;<=>@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~', 'Hello World');
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -582,7 +566,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
         try {
             $this->cosClient->createBucket(array('Bucket' => $this->bucket));
             $this->cosClient->upload($this->bucket, 'hello.txt', str_repeat('a', 9 * 1024 * 1024));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -598,7 +582,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
             $this->cosClient->getObject(array(
                 'Bucket' => $this->bucket,
                 'Key' => '你好.txt',));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -614,7 +598,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
             $this->cosClient->getObject(array(
                 'Bucket' => $this->bucket,
                 'Key' => '你好<>!@#^%^&*&(&^!@#@!.txt',));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -631,7 +615,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                 'Bucket' => $this->bucket,
                 'Key' => '你好.txt',
                 'IfMatch' => '"b10a8db164e0754105b7a99be72e3fe5"'));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -650,9 +634,9 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                 'Bucket' => $this->bucket,
                 'Key' => '你好.txt',
                 'IfMatch' => '""'));
-        } catch (\Exception $e) {
-            // echo($e->getExceptionCode());
-            // echo($e->getStatusCode());
+        } catch (ServiceResponseException $e) {
+//            echo($e->getExceptionCode());
+//            echo($e->getStatusCode());
             $this->assertTrue($e->getExceptionCode() === 'PreconditionFailed' && $e->getStatusCode() === 412);
         }
     }
@@ -669,7 +653,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                 'Bucket' => $this->bucket,
                 'Key' => '你好.txt',
                 'IfNoneMatch' => '"b10a8db164e0754105b7a99be72e3fe5"'));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertTrue($e->getExceptionCode() === 'NotModified' && $e->getStatusCode() === 304);
         }
     }
@@ -689,7 +673,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                 'Key' => '你好.txt',
                 'IfNoneMatch' => '""'));
 
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -702,7 +686,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
         try{
             $this->cosClient->createBucket(array('Bucket' => $this->bucket));
             $this->cosClient->getObjectUrl($this->bucket, 'hello.txt', '+10 minutes');
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -733,7 +717,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                     'DisplayName' => 'qcs::cam::uin/2779643970:uin/2779643970',
                     'ID' => 'qcs::cam::uin/2779643970:uin/2779643970',
                 )));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
 
@@ -768,7 +752,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                     'ID' => 'qcs::cam::uin/2779643970:uin/2779643970',
                 )));
 
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -789,7 +773,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                     'Key' => '你好.txt',
                     'ACL'=>'private'
                 ));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -810,7 +794,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                     'Key' => '你好.txt',
                     'ACL'=>'public-read'
                 ));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -831,7 +815,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                     'Key' => '你好.txt',
                     'ACL'=>'public'
                 ));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertTrue($e->getExceptionCode() === 'InvalidArgument' && $e->getStatusCode() === 400);
         }
     }
@@ -849,7 +833,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                 'Bucket' =>  $this->bucket,
                 'Key' => '你好.txt',
                 'GrantRead' => 'id="qcs::cam::uin/327874225:uin/327874225"'));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -867,7 +851,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                 'Bucket' =>  $this->bucket,
                 'Key' => '你好.txt',
                 'GrantWrite' => 'id="qcs::cam::uin/327874225:uin/327874225"'));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -885,7 +869,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                 'Bucket' =>  $this->bucket,
                 'Key' => '你好.txt',
                 'GrantFullControl' => 'id="qcs::cam::uin/327874225:uin/327874225"'));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -903,7 +887,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                 'Bucket' =>  $this->bucket,
                 'Key' => '你好.txt',
                 'GrantFullControl' => 'id="qcs::cam::uin/2779643970:uin/327874225",id="qcs::cam::uin/327874225:uin/327874225",id="qcs::cam::uin/327874225:uin/327874225"'));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -921,7 +905,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                 'Bucket' =>  $this->bucket,
                 'Key' => '你好.txt',
                 'GrantFullControl' => 'id="qcs::cam::uin/2779643970:uin/327874225"'));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -941,7 +925,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                 'GrantRead' => 'id="qcs::cam::uin/123:uin/123"',
                 'GrantWrite' => 'id="qcs::cam::uin/2779643970:uin/327874225"',
                 'GrantFullControl' => 'id="qcs::cam::uin/2779643970:uin/327874225"',));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -960,7 +944,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                 'Bucket' =>  $this->bucket,
                 'Key' => '你好.txt',
                 'GrantFullControl' => 'id="qcs::camuin/321023:uin/327874225"',));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertTrue($e->getExceptionCode() === 'InvalidArgument' && $e->getStatusCode() === 400);
         }
     }
@@ -992,7 +976,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                     'DisplayName' => 'qcs::cam::uin/2779643970:uin/2779643970',
                     'ID' => 'qcs::cam::uin/2779643970:uin/2779643970',
                 )));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
@@ -1024,7 +1008,7 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                     'DisplayName' => 'qcs::cam::uin/2779643970:uin/2779643970',
                     'ID' => 'qcs::cam::uin/2779643970:uin/2779643970',
                 )));
-        } catch (\Exception $e) {
+        } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
     }
