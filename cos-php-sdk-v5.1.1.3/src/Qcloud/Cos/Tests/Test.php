@@ -717,21 +717,6 @@ class BucketTest extends \PHPUnit_Framework_TestCase
     }
 
     /*
-     * put bucket，bucket名称以-开头
-     * InvalidBucketName
-     * 400
-     */
-    public function testPutBucket4()
-    {
-        try {
-            $this->cosClient->createBucket(array('Bucket' => '-12333-4445'.$this->bucket));
-            $this->cosClient->deleteBucket(array('Bucket' => '-12333-4445'.$this->bucket));
-        } catch (ServiceResponseException $e) {
-            $this->assertTrue($e->getExceptionCode() === 'InvalidBucketName' && $e->getStatusCode() === 400);
-        }
-    }
-
-    /*
      * 正常get bucket location
      * 200
      */
@@ -801,28 +786,10 @@ class BucketTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /*
-     * Copy小文件
-     * 200
-     */
-    public function testCopySmallFile()
-    {
-        try {
-            $this->cosClient->createBucket(array('Bucket' => $this->bucket));
-            $this->cosClient->copyObject(array(
-                'Bucket' => $this->bucket,
-                'CopySource' => 'lewzylu01-1252448703.cos.ap-guangzhou.myqcloud.com/test10M',
-                'Key' => 'test10M',
-                'ServerSideEncryption' => 'AES256'
-            ));
-        } catch (ServiceResponseException $e) {
-            $this->assertFalse(true, $e);
-        }
-    }
 
     /*
      * 上传文件Bucket不存在
-     * NoSuchBucket
+     * NoSuchBucket 
      * 404
      */
     public function testPutObjectIntoNonexistedBucket() {
