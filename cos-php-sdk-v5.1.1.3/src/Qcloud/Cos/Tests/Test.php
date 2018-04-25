@@ -601,10 +601,12 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                         // ... repeated
                     ),
                 )));
+            sleep(5);
             $result = $this->cosClient->getBucketLifecycle(array(
                 // Bucket is required
                 'Bucket' => $this->bucket,
             ));
+
         } catch (ServiceResponseException $e) {
             $this->assertFalse(true, $e);
         }
@@ -641,6 +643,8 @@ class BucketTest extends \PHPUnit_Framework_TestCase
                         // ... repeated
                     ),
                 )));
+
+            sleep(5);
             $result = $this->cosClient->deleteBucketLifecycle(array(
                 // Bucket is required
                 'Bucket' => $this->bucket,
